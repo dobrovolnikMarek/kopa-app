@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "895481596",
+    "project_id": "kopa-app-88f9e",
+    "storage_bucket": "kopa-app-88f9e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:895481596:android:8cbe529a1ad3ed2e70c979",
+        "android_client_info": {
+          "package_name": "com.example.kopa_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "895481596-0t86jggnq0e6aqjhvtk0j9k1dj1b33d2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kopa_app",
+            "certificate_hash": "c147f10c9642da1a8cc71dae7ecc355254d60b14"
+          }
+        },
+        {
+          "client_id": "895481596-j3v4ukvf2vmli3992efueck6pgfqo0rs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD50aMIUYerKfRRhz12ROtLXyijox9J_GE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "895481596-j3v4ukvf2vmli3992efueck6pgfqo0rs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
