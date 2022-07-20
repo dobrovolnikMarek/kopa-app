@@ -3,14 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:kopa_app/app/core/getx/base.controller.dart';
+import 'package:kopa_app/app/core/utils/logger.dart';
+import 'package:kopa_app/app/data/repositories/user/user_repository.dart';
+import 'package:kopa_app/app/modules/auth/login_by_phone/utils/login_form_fields.dart';
 import 'package:kopa_app/app/routes/app_pages.dart';
 
 class LoginByPhoneController extends BaseController {
   //TODO: Implement LoginByPhoneController
   final formKey = GlobalKey<FormBuilderState>();
+  var auth = FirebaseAuth.instance;
+  final UserRepository _userRepository = Get.find();
+  String verificationId = "";
 
   final count = 0.obs;
   final isShowCode = false.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -25,69 +32,56 @@ class LoginByPhoneController extends BaseController {
   void onClose() {
     super.onClose();
   }
+
   Future<void> submit() async {
     try {
+      if (!formKey.currentState!.saveAndValidate()) return;
+      showProgress();
+      final credential = await auth.signInWithCredential(
+        PhoneAuthProvider.credential(
+          verificationId: verificationId,
+          smsCode: formKey
+              .currentState!.value[LoginFormFields.CODE.toSimpleString()],
+        ),
+      );
+      if (credential.user != null) {
+        final userData = await _userRepository.getUserData(credential.user!.uid);
+        userData == null ? Get.toNamed(Routes.SIGN_UP)
+            : Get.offAllNamed(Routes.HOME);
+      }
+    } catch (err, stackTrace) {
+      handleError(err, stackTrace);
+    } finally {
+      hideProgress();
+    }
+  }
 
+  Future<void> verifyPhone() async {
+    try {
       if (!formKey.currentState!.saveAndValidate()) return;
       final formValue = formKey.currentState!.value;
-      print(formValue);
-      // isShowCode.value= true;
-      // final check = await _authRepository
-      //     .checkPhone(formValue[LoginForm.name.name].toString());
-      // await _authRepository.sendSmsCode(check.checkToken);
-      Get.toNamed(
-        Routes.SIGN_UP,
-      );
+      showProgress();
+      await auth.verifyPhoneNumber(
+          timeout: const Duration(seconds: 5),
+          phoneNumber: '+380${formValue[LoginFormFields.PHONE.toSimpleString()]}',
+          verificationCompleted: (AuthCredential authCredential) {
+            auth.signInWithCredential(authCredential);
+          },
+          verificationFailed: (authException) {
+            hideProgress();
+            logger.w(authException.toString());
+          },
+          codeSent: (String id, [int? resendToken]) {
+            verificationId = id;
+            isShowCode.value = true;
+            hideProgress();
+          },
+          codeAutoRetrievalTimeout: (id) {
+            verificationId = id;
+            hideProgress();
+          });
     } catch (e) {
-      print(e);
-    } finally {
-
+      logger.e(e);
     }
   }
-  Future<void> verifyPhone()  async{
-    if (!formKey.currentState!.saveAndValidate()) return;
-/*    FirebaseAuth auth = FirebaseAuth.instance;
-    if (!formKey.currentState!.saveAndValidate()) return;
-    final formValue = formKey.currentState!.value;
-    print(formValue['phone']);
-    auth.verifyPhoneNumber(
-      phoneNumber: "+380" + formValue['phone'],
-      verificationCompleted: (PhoneAuthCredential credential) async {
-        await auth.signInWithCredential(credential).then((value) {
-          print("You are logged in successfully");
-        });
-      },
-      verificationFailed: (FirebaseAuthException e) {
-        print(e.message);
-      },
-      codeSent: (String verificationId, int? resendToken) {
-        print(verificationId);
-*//*        otpVisibility = true;
-        verificationID = verificationId;
-        setState(() {});*//*
-      },
-      codeAutoRetrievalTimeout: (String verificationId) {},
-    );*/
-    try {
-
-      // if (!formKey.currentState!.saveAndValidate()) return;
-      // final formValue = formKey.currentState!.value;
-      isShowCode.value= true;
-      // final check = await _authRepository
-      //     .checkPhone(formValue[LoginForm.name.name].toString());
-      // await _authRepository.sendSmsCode(check.checkToken);
-      // Get.toNamed(
-      //   Routes.OTP_CONFIRMATION,
-      //   arguments: {
-      //     'check': check,
-      //   },
-      // );
-    } catch (e) {
-      print(e);
-    } finally {
-
-    }
-  }
-
 }
-

@@ -19,6 +19,13 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/logo.png
   AssetGenImage get logo => const AssetGenImage('assets/images/logo.png');
+
+  /// File path: assets/images/size_info.png
+  AssetGenImage get sizeInfo =>
+      const AssetGenImage('assets/images/size_info.png');
+
+  /// File path: assets/images/user.png
+  AssetGenImage get user => const AssetGenImage('assets/images/user.png');
 }
 
 class $AssetsImagesAuthGen {

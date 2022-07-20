@@ -28,4 +28,5 @@ class KopaApp {
   static const IconData sneaker = IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData filter = IconData(0xe805, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData gear = IconData(0xe806, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData edit = IconData(0xe80a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

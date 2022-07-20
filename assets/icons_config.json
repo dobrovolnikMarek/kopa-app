@@ -103,6 +103,20 @@
       "search": [
         "gear"
       ]
+    },
+    {
+      "uid": "bf47cd516f69ef7fbe0ff9b40eac199d",
+      "css": "edit",
+      "code": 59402,
+      "src": "custom_icons",
+      "selected": true,
+      "svg": {
+        "path": "M642.9 178.6L821.4 357.1 357.1 821.4H178.6V642.9L642.9 178.6Z",
+        "width": 1000
+      },
+      "search": [
+        "edit"
+      ]
     }
   ]
 }

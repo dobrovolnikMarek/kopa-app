@@ -3,7 +3,10 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:kopa_app/app/dependency_injection/global_bindings.dart';
 import 'package:kopa_app/core_app.dart';
+
+final GlobalBinding globalBinding = GlobalBinding(Flavor.DEV);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

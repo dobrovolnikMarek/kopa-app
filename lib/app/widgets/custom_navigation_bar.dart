@@ -13,9 +13,9 @@ class CustomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     List<String> routes = [
       Routes.HOME,
-      '/',
-      '/',
-      '/',
+      Routes.MY_PRODUCTS,
+      Routes.ADD_PRODUCT,
+      Routes.LIKED_PRODUCTS,
       Routes.SETTINGS,
     ];
     return ConvexAppBar(
@@ -32,6 +32,7 @@ class CustomNavigationBar extends StatelessWidget {
         TabItem(icon: KopaApp.gear),
       ],
       initialActiveIndex: index ?? 0,
+      // onTap: (int i) => Get.toNamed(routes[i]),
       onTap: (int i) => Get.offAllNamed(routes[i]),
     );
   }

@@ -12,6 +12,9 @@ abstract class Routes {
   static const SETTINGS = _Paths.SETTINGS;
   static const PRODUCT_INFO = _Paths.PRODUCT_INFO;
   static const SIGN_UP = _Paths.SIGN_UP;
+  static const ADD_PRODUCT = _Paths.ADD_PRODUCT;
+  static const MY_PRODUCTS = _Paths.MY_PRODUCTS;
+  static const LIKED_PRODUCTS = _Paths.LIKED_PRODUCTS;
 }
 
 abstract class _Paths {
@@ -25,4 +28,7 @@ abstract class _Paths {
   static const SETTINGS = '/settings';
   static const PRODUCT_INFO = '/product-info';
   static const SIGN_UP = '/sign-up';
+  static const ADD_PRODUCT = '/add-product';
+  static const MY_PRODUCTS = '/my-products';
+  static const LIKED_PRODUCTS = '/liked-products';
 }

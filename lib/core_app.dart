@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:kopa_app/app/modules/splash/bindings/splash_binding.dart';
+import 'package:kopa_app/main.dart';
 import 'package:kopa_app/resources/theme/theme.dart';
 
 import 'app/routes/app_pages.dart';
@@ -29,7 +30,7 @@ class CoreAppState extends State<CoreApp> with WidgetsBindingObserver {
         );
       },
       // transitionDuration: AppPages.transitionDuration,
-      defaultTransition: Transition.native,
+      defaultTransition: Transition.noTransition,
       debugShowCheckedModeBanner: false,
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
@@ -51,7 +52,8 @@ class CoreAppState extends State<CoreApp> with WidgetsBindingObserver {
       initialRoute: Routes.SPLASH,
       getPages: AppPages.routes,
       unknownRoute: AppPages.UNKNOWN,
-      initialBinding: SplashBinding(),
+      // initialBinding: SplashBinding(),
+      initialBinding: globalBinding,
     );
   }
 }

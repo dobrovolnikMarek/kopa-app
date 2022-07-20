@@ -1,17 +1,23 @@
 import 'package:get/get.dart';
 
+import '../modules/product/add_product/bindings/add_product_binding.dart';
+import '../modules/product/add_product/views/add_product_view.dart';
 import '../modules/auth/intro/bindings/intro_binding.dart';
 import '../modules/auth/intro/views/intro_view.dart';
 import '../modules/auth/login_by_phone/bindings/login_by_phone_binding.dart';
 import '../modules/auth/login_by_phone/views/login_by_phone_view.dart';
-import '../modules/home/bindings/home_binding.dart';
-import '../modules/home/views/home_view.dart';
-import '../modules/product_info/bindings/product_info_binding.dart';
-import '../modules/product_info/views/product_info_view.dart';
-import '../modules/settings/bindings/settings_binding.dart';
-import '../modules/settings/views/settings_view.dart';
 import '../modules/auth/sign_up/bindings/sign_up_binding.dart';
 import '../modules/auth/sign_up/views/sign_up_view.dart';
+import '../modules/home/bindings/home_binding.dart';
+import '../modules/home/views/home_view.dart';
+import '../modules/product/liked_products/bindings/liked_products_binding.dart';
+import '../modules/product/liked_products/views/liked_products_view.dart';
+import '../modules/product/my_products/bindings/my_products_binding.dart';
+import '../modules/product/my_products/views/my_products_view.dart';
+import '../modules/product/product_info/bindings/product_info_binding.dart';
+import '../modules/product/product_info/views/product_info_view.dart';
+import '../modules/settings/bindings/settings_binding.dart';
+import '../modules/settings/views/settings_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
 import '../modules/unknown/bindings/unknown_binding.dart';
@@ -23,7 +29,7 @@ class AppPages {
   AppPages._();
 
   // static const INITIAL = Routes.INTRO;
-  static const INITIAL = Routes.INTRO;
+  static const INITIAL = Routes.HOME;
 
   static final routes = [
     GetPage(
@@ -65,6 +71,21 @@ class AppPages {
       name: _Paths.SIGN_UP,
       page: () => SignUpView(),
       binding: SignUpBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADD_PRODUCT,
+      page: () => AddProductView(),
+      binding: AddProductBinding(),
+    ),
+    GetPage(
+      name: _Paths.MY_PRODUCTS,
+      page: () => MyProductsView(),
+      binding: MyProductsBinding(),
+    ),
+    GetPage(
+      name: _Paths.LIKED_PRODUCTS,
+      page: () => LikedProductsView(),
+      binding: LikedProductsBinding(),
     ),
   ];
 
