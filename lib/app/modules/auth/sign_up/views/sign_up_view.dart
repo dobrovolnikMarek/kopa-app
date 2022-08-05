@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
@@ -44,6 +45,7 @@ class _SignUpViewState extends BaseStatefulView<SignUpView, SignUpController> {
                               color: Color.fromRGBO(188, 188, 188, 1),
                             ),
                             keyboardType: TextInputType.text,
+                            textCapitalization: TextCapitalization.words,
                             decoration: InputDecoration(
                               label: Text('Ім’я'.tr),
                               border: OutlineInputBorder(
@@ -80,6 +82,7 @@ class _SignUpViewState extends BaseStatefulView<SignUpView, SignUpController> {
                               color: Color.fromRGBO(188, 188, 188, 1),
                             ),
                             keyboardType: TextInputType.text,
+                            textCapitalization: TextCapitalization.words,
                             decoration: InputDecoration(
                               label: Text('Прізвище'.tr),
                               border: OutlineInputBorder(
@@ -116,6 +119,7 @@ class _SignUpViewState extends BaseStatefulView<SignUpView, SignUpController> {
                               color: Color.fromRGBO(188, 188, 188, 1),
                             ),
                             keyboardType: TextInputType.text,
+                            textCapitalization: TextCapitalization.words,
                             decoration: InputDecoration(
                               label: Text('Місто'.tr),
                               border: OutlineInputBorder(
@@ -145,13 +149,16 @@ class _SignUpViewState extends BaseStatefulView<SignUpView, SignUpController> {
                           const SizedBox(
                             height: 22,
                           ),
-                          FormBuilderTextField(
+                          controller.isShowPhoneField ? FormBuilderTextField(
                             key: Key(SignUpFormFields.PHONE.toSimpleString()),
                             name: SignUpFormFields.PHONE.toSimpleString(),
                             style: const TextStyle(
                               color: Color.fromRGBO(188, 188, 188, 1),
                             ),
                             keyboardType: TextInputType.text,
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(9),
+                            ],
                             decoration: InputDecoration(
                               label: Text('Номер телефону'.tr),
                               prefixText: '+380',
@@ -172,7 +179,7 @@ class _SignUpViewState extends BaseStatefulView<SignUpView, SignUpController> {
                                 errorText: 'Поле не повинне бути порожнім'.tr,
                               ),
                             ]),
-                          ),
+                          ) : const Offstage(),
                         ],
                       ),
                     ),

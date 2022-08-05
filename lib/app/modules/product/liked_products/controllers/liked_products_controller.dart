@@ -46,4 +46,13 @@ class LikedProductsController extends BaseController {
       isLoading.value = false;
     }
   }
+
+  void onChange(val, productId) async {
+    if (!val == false) {
+      await _productRepository.onDislikeProduct(productId);
+    } else {
+      await _productRepository.onLikeProduct(productId);
+    }
+    await getProducts();
+  }
 }

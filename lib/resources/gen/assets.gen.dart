@@ -20,6 +20,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/logo.png
   AssetGenImage get logo => const AssetGenImage('assets/images/logo.png');
 
+  /// File path: assets/images/main-bg.png
+  AssetGenImage get mainBg => const AssetGenImage('assets/images/main-bg.png');
+
   /// File path: assets/images/size_info.png
   AssetGenImage get sizeInfo =>
       const AssetGenImage('assets/images/size_info.png');

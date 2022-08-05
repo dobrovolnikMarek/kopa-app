@@ -2,9 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kopa_app/app/core/getx/base.controller.dart';
-import 'package:kopa_app/app/core/utils/logger.dart';
 import 'package:kopa_app/app/data/repositories/user/user_repository.dart';
-import 'package:kopa_app/app/routes/app_pages.dart';
+import 'package:kopa_app/routes/app_pages.dart';
 
 class IntroController extends BaseController {
   //TODO: Implement IntroControllerController
@@ -44,9 +43,7 @@ class IntroController extends BaseController {
     );
     if (credential.user != null) {
       final userData = await _userRepository.getUserData(credential.user!.uid);
-      userData == null ? Get.toNamed(Routes.SIGN_UP, arguments: {
-        'showPhoneField': true
-      })
+      userData == null ? Get.toNamed(Routes.SIGN_UP)
           : Get.offAllNamed(Routes.HOME);
     }
   }

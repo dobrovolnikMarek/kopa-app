@@ -3,7 +3,11 @@ enum AddProductFormFields {
   MODEL,
   MATERIAL,
   DESCRIPTION,
-  PRICE
+  PRICE,
+  SIZE,
+  LENGTH,
+  WIDTH,
+  SIZETYPE,
 }
 
 extension Decoder on AddProductFormFields {
@@ -13,6 +17,10 @@ extension Decoder on AddProductFormFields {
     'material': AddProductFormFields.MATERIAL,
     'description': AddProductFormFields.DESCRIPTION,
     'price': AddProductFormFields.PRICE,
+    'size': AddProductFormFields.SIZE,
+    'length': AddProductFormFields.LENGTH,
+    'width': AddProductFormFields.WIDTH,
+    'sizeType': AddProductFormFields.SIZETYPE,
   }[string];
 
   String toSimpleString() => {
@@ -21,5 +29,9 @@ extension Decoder on AddProductFormFields {
     AddProductFormFields.MATERIAL: 'material',
     AddProductFormFields.DESCRIPTION: 'description',
     AddProductFormFields.PRICE: 'price',
+    AddProductFormFields.SIZE: 'size',
+    AddProductFormFields.LENGTH: 'length',
+    AddProductFormFields.WIDTH: 'width',
+    AddProductFormFields.SIZETYPE: 'sizeType',
   }[this]!;
 }

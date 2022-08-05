@@ -8,7 +8,7 @@ import 'package:kopa_app/app/data/models/external/auth/user.model.dart';
 import 'package:kopa_app/app/data/repositories/auth/auth_repository.dart';
 import 'package:kopa_app/app/data/repositories/product/product_repository.dart';
 import 'package:kopa_app/app/modules/auth/sign_up/utils/sign_up_form_fields.dart';
-import 'package:kopa_app/app/routes/app_pages.dart';
+import 'package:kopa_app/routes/app_pages.dart';
 
 class SignUpController extends BaseController {
   //TODO: Implement SignUpController
@@ -20,8 +20,8 @@ class SignUpController extends BaseController {
   bool isShowPhoneField = false;
 
   @override
-  void onInit() async{
-    isShowPhoneField = await Get.arguments['showPhoneField'] ?? false;
+  void onInit() {
+    isShowPhoneField = _currentUser?.phoneNumber == null ? true : false;
     super.onInit();
   }
 
@@ -56,7 +56,7 @@ class SignUpController extends BaseController {
         Routes.HOME,
       );
     } catch (e) {
-      print(e);
+      logger.e(e);
     } finally {
       hideProgress();
     }

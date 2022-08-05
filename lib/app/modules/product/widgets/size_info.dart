@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kopa_app/app/widgets/custom_auto_size_text.dart';
+import 'package:kopa_app/app/modules/product/add_product/utils/add_product_form_fields.dart';
 
 class SizeInfo extends StatelessWidget {
-  const SizeInfo({Key? key}) : super(key: key);
+  // final Map<String, dynamic> sizeInfo;
+  final double size;
+  final Map<String, dynamic> sizeInfo;
+
+  const SizeInfo({
+    Key? key,
+    required this.sizeInfo,
+    required this.size,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,15 +22,17 @@ class SizeInfo extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                '40',
-                style: TextStyle(
+              Text(
+                // size,
+                size.toString(),
+                style: const TextStyle(
                   color: Color(0xff0ccde6),
                   fontSize: 22,
                 ),
               ),
               Text(
-                'EU'.tr,
+                sizeInfo[AddProductFormFields.SIZETYPE.toSimpleString()],
+                // sizeType,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 10,
@@ -33,9 +43,11 @@ class SizeInfo extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              const Text(
-                '28.5',
-                style: TextStyle(
+              Text(
+                sizeInfo[AddProductFormFields.LENGTH.toSimpleString()]
+                    .toString(),
+                // length.toString(),
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 14,
                 ),
@@ -52,9 +64,11 @@ class SizeInfo extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              const Text(
-                '10',
-                style: TextStyle(
+              Text(
+                sizeInfo[AddProductFormFields.WIDTH.toSimpleString()]
+                    .toString(),
+                // width.toString(),
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 14,
                 ),

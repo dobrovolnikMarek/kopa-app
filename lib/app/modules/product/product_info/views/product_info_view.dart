@@ -1,15 +1,18 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kopa_app/app/core/states/view/base_stateful.view.dart';
 import 'package:kopa_app/app/core/widgets/base_stateful.widget.dart';
 import 'package:kopa_app/app/modules/product/widgets/size_info.dart';
-import 'package:kopa_app/app/routes/app_pages.dart';
+import 'package:kopa_app/routes/app_pages.dart';
 import 'package:kopa_app/app/widgets/custom_dialog.dart';
 import 'package:kopa_app/app/widgets/main_button.dart';
 import 'package:kopa_app/app/modules/product/widgets/price_tag.dart';
 import 'package:kopa_app/app/widgets/splash_effect.dart';
+import 'package:kopa_app/resources/gen/assets.gen.dart';
 import 'package:kopa_app/resources/icons/kopa_app.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -19,6 +22,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 class ProductInfoView extends BaseStatefulWidget {
   @override
   State<ProductInfoView> createState() => _ProductInfoViewState();
+}
+
+Uint8List convertBase64Image(String base64String) {
+  return const Base64Decoder().convert(base64String.split(',').last);
 }
 
 class _ProductInfoViewState
@@ -62,30 +69,32 @@ class _ProductInfoViewState
                           itemCount: controller.product!.photos.length,
                           itemBuilder: (context, index, realIndex) {
                             return SizedBox(
-                              width: MediaQuery.of(context).size.width,
-                              child: CachedNetworkImage(
-                                fit: BoxFit.cover,
-                                imageUrl: controller.product!.photos[index],
-                              ),
-                            );
+                                width: MediaQuery.of(context).size.width,
+                                child: Image.memory(
+                                  convertBase64Image(
+                                      controller.product!.photos[index]),
+                                  gaplessPlayback: true,
+                                  fit: BoxFit.cover,
+                                ));
                           },
                         ),
-                        controller.product!.photos.length > 1 ?
-                        Positioned(
-                          top: 25,
-                          right: 10,
-                          child: AnimatedSmoothIndicator(
-                            effect: const SwapEffect(
-                              activeDotColor: Colors.white,
-                              dotColor: Colors.black26,
-                              dotWidth: 12,
-                              dotHeight: 12,
-                            ),
-                            axisDirection: Axis.vertical,
-                            activeIndex: controller.activeImgIndex.value,
-                            count: controller.product!.photos.length,
-                          ),
-                        ) : const Offstage(),
+                        controller.product!.photos.length > 1
+                            ? Positioned(
+                                top: 25,
+                                right: 10,
+                                child: AnimatedSmoothIndicator(
+                                  effect: const SwapEffect(
+                                    activeDotColor: Colors.white,
+                                    dotColor: Colors.black26,
+                                    dotWidth: 12,
+                                    dotHeight: 12,
+                                  ),
+                                  axisDirection: Axis.vertical,
+                                  activeIndex: controller.activeImgIndex.value,
+                                  count: controller.product!.photos.length,
+                                ),
+                              )
+                            : const Offstage(),
                       ],
                     ),
                   ),
@@ -113,7 +122,9 @@ class _ProductInfoViewState
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   PriceTag(
-                                      price: controller.product?.price ?? ''),
+                                      price: controller.product?.price
+                                              .toString() ??
+                                          ''),
                                   controller.isMineProduct.value == true
                                       ? IconButton(
                                           onPressed: () => Get.toNamed(
@@ -139,7 +150,7 @@ class _ProductInfoViewState
                                                     ? Colors.red
                                                     : Colors.white,
                                           ),
-                                        )
+                                        ),
                                 ],
                               ),
                               const SizedBox(
@@ -161,7 +172,10 @@ class _ProductInfoViewState
                               ),
                               SizedBox(
                                 width: MediaQuery.of(context).size.width / 2,
-                                child: const SizeInfo(),
+                                child: SizeInfo(
+                                  sizeInfo: controller.product?.sizeInfo ?? {},
+                                  size: controller.product?.size ?? 0,
+                                ),
                               ),
                               const SizedBox(
                                 height: 15,
@@ -227,23 +241,26 @@ class _ProductInfoViewState
                                       ),
                                       child: Padding(
                                         padding: const EdgeInsets.all(4.0),
-                                        child: CachedNetworkImage(
-                                          imageUrl: controller.seller?.imgUrl ??
-                                              'https://picsum.photos/200/300',
-                                          width: 60,
-                                          height: 60,
-                                          imageBuilder:
-                                              (context, imageProvider) =>
-                                                  DecoratedBox(
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              image: DecorationImage(
-                                                image: imageProvider,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
+                                        child: controller.seller?.imgUrl != null
+                                            ? CachedNetworkImage(
+                                                imageUrl:
+                                                    controller.seller!.imgUrl!,
+                                                width: 60,
+                                                height: 60,
+                                                imageBuilder:
+                                                    (context, imageProvider) =>
+                                                        DecoratedBox(
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            : Assets.images.user
+                                                .image(width: 50, height: 50),
                                       ),
                                     ),
                                     const SizedBox(
@@ -305,7 +322,8 @@ class _ProductInfoViewState
                                         width: 50.55,
                                         height: 50.55,
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(13),
+                                          borderRadius:
+                                              BorderRadius.circular(13),
                                           boxShadow: const [
                                             BoxShadow(
                                               color: Color(0x3d007aff),
@@ -319,7 +337,8 @@ class _ProductInfoViewState
                                           angle: 0.79,
                                           child: const Icon(
                                             KopaApp.phone,
-                                            color: Color.fromRGBO(35, 35, 38, 1),
+                                            color:
+                                                Color.fromRGBO(35, 35, 38, 1),
                                           ),
                                         ),
                                       ),

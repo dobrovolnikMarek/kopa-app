@@ -7,7 +7,8 @@ import 'package:kopa_app/app/data/models/external/product/product.model.dart';
 import 'package:kopa_app/app/data/repositories/archive/archive_repository.dart';
 import 'package:kopa_app/app/data/repositories/product/product_repository.dart';
 import 'package:kopa_app/app/data/repositories/user/user_repository.dart';
-import 'package:kopa_app/app/routes/app_pages.dart';
+import 'package:kopa_app/app/modules/product/add_product/utils/add_product_form_fields.dart';
+import 'package:kopa_app/routes/app_pages.dart';
 
 import '../../../../data/models/external/auth/user.model.dart';
 
@@ -77,6 +78,7 @@ class ProductInfoController extends BaseController {
 
   Future<void> deleteProduct() async {
     try {
+      showProgress();
       await _archiveRepository.createArchiveProduct(
           ProductModel(
             id: product!.id,
@@ -86,14 +88,23 @@ class ProductInfoController extends BaseController {
             description: product!.description,
             price: product!.price,
             userId: product!.userId,
+            size: product!.size,
+            sizeInfo: {
+              AddProductFormFields.SIZETYPE.toSimpleString():
+              product!.sizeInfo[AddProductFormFields.SIZETYPE.toSimpleString()],
+              AddProductFormFields.WIDTH.toSimpleString():
+                  product!.sizeInfo[AddProductFormFields.WIDTH.toSimpleString()],
+              AddProductFormFields.LENGTH.toSimpleString():
+                  product!.sizeInfo[AddProductFormFields.LENGTH.toSimpleString()],
+            },
+
           ),
           product!.id);
       await _productRepository.deleteProduct(product!.id);
-      Get.offAllNamed(Routes.SETTINGS);
+      hideProgress();
+      Get.offAllNamed(Routes.HOME);
     } catch (e) {
       logger.e(e);
-    } finally {
-      isLoading.value = false;
     }
   }
 }

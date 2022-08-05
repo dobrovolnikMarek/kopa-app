@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:kopa_app/app/core/data/base_repository.dart';
@@ -15,5 +16,8 @@ abstract class ProductRepository extends BaseRepository {
   Future<void> onLikeProduct(String productId);
   Future<void> onDislikeProduct(String productId);
   Future<void> createProduct(ProductModel product, String id);
+  Future<void> updateProduct(ProductModel product, String id);
   Future<List<String>> uploadProductPhotos(List<XFile> files, String productId);
+  List<String> productPhotosToBase64(List<XFile> files);
+  Uint8List convertBase64Image(String base64String);
 }

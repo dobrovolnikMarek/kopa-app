@@ -1,5 +1,4 @@
-import 'dart:ui';
-
+import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -11,14 +10,17 @@ import 'package:kopa_app/app/data/models/external/product/product.model.dart';
 import 'package:kopa_app/app/data/repositories/product/product_repository.dart';
 import 'package:kopa_app/app/data/repositories/user/user_repository.dart';
 import 'package:kopa_app/app/modules/product/add_product/utils/add_product_form_fields.dart';
-import 'package:kopa_app/app/routes/app_pages.dart';
+import 'package:kopa_app/routes/app_pages.dart';
 import 'package:xid/xid.dart';
-import 'package:flutter/scheduler.dart';
 
 class AddProductController extends BaseController {
   //TODO: Implement AddProductController
   final formKey = GlobalKey<FormBuilderState>();
-
+  ProductModel? product;
+  final ProductRepository _productRepository = Get.find();
+  UserModel? data;
+  final UserRepository _userRepository = Get.find();
+  final isLoading = false.obs;
   final sizeField = TextEditingController();
   final lengthField = TextEditingController();
   final widthField = TextEditingController();
@@ -38,30 +40,39 @@ class AddProductController extends BaseController {
     'Штучна шкіра',
     'Поліестер',
   ];
-
-  ProductModel? product;
-  final ProductRepository _productRepository = Get.find();
-  UserModel? data;
-  final UserRepository _userRepository = Get.find();
-  final isLoading = false.obs;
-  final isUploading = false.obs;
+  final List<Map<String, String>> sizeTypesNames = [
+    {
+      'full': '',
+      'short': '',
+    },
+    {
+      'full': 'Европейський  EU',
+      'short': 'EU',
+    },
+    {
+      'full': 'Український UA',
+      'short': 'UA',
+    },
+    {
+      'full': 'Британський  GB',
+      'short': 'GB',
+    },
+  ];
 
   @override
-  void onInit()  {
+  void onInit() async {
     // before first render
     _getUser();
-
-
+    product = await Get.arguments['product'];
     super.onInit();
   }
 
   @override
   void onReady() async {
-    product = await Get.arguments['product'];
     if (product != null) {
-
-      SchedulerBinding.instance.addPostFrameCallback((_) => _setInfo());
-      // _setInfo();
+      showProgress();
+      Timer(const Duration(milliseconds: 500), () => _setInfo());
+      hideProgress();
     }
     // after first render
     // delete onReady if this is not needed
@@ -76,7 +87,6 @@ class AddProductController extends BaseController {
   }
 
   void selectValue(String value, String field) {
-    // controller.text = value;
     formKey.currentState!.patchValue({
       field: value,
     });
@@ -85,50 +95,98 @@ class AddProductController extends BaseController {
   Future<void> submit() async {
     var id = Xid().toString();
     try {
-      isUploading.value = true;
+      showProgress();
       if (!formKey.currentState!.saveAndValidate()) return;
       final formValue = formKey.currentState!.value;
-      final imagesUrls = await _productRepository.uploadProductPhotos(
-        formValue['photos'],
-        id,
-      );
       await _productRepository.createProduct(
-          ProductModel(
+        ProductModel(
             id: id,
-            material: formValue['material'],
-            model: formValue['model'],
-            photos: imagesUrls,
-            price: formValue['price'],
+            material: formValue[AddProductFormFields.MATERIAL.toSimpleString()],
+            model: formValue[AddProductFormFields.MODEL.toSimpleString()],
+            photos: formValue[AddProductFormFields.PHOTOS.toSimpleString()],
+            price: int.parse(
+                formValue[AddProductFormFields.PRICE.toSimpleString()]),
             userId: data!.id!,
-            description: formValue['description'],
-          ),
-          id);
-      // isShowCode.value= true;
-      // final check = await _authRepository
-      //     .checkPhone(formValue[LoginForm.name.name].toString());
-      // await _authRepository.sendSmsCode(check.checkToken);
-      Get.offAllNamed(
-        Routes.HOME,
+            description:
+                formValue[AddProductFormFields.DESCRIPTION.toSimpleString()],
+            size: double.parse(
+                formValue[AddProductFormFields.SIZE.toSimpleString()]),
+            sizeInfo: {
+              AddProductFormFields.SIZETYPE.toSimpleString():
+                  formValue[AddProductFormFields.SIZETYPE.toSimpleString()],
+              AddProductFormFields.WIDTH.toSimpleString(): double.parse(
+                  formValue[AddProductFormFields.WIDTH.toSimpleString()]),
+              AddProductFormFields.LENGTH.toSimpleString(): double.parse(
+                  formValue[AddProductFormFields.LENGTH.toSimpleString()]),
+            }),
+        id,
       );
     } catch (e) {
       logger.e(e);
     } finally {
-      isUploading.value = false;
+      hideProgress();
+      Get.offAllNamed(
+        Routes.MY_PRODUCTS,
+      );
+    }
+  }
+
+  Future<void> updateProduct() async {
+    try {
+      showProgress();
+      if (!formKey.currentState!.saveAndValidate()) return;
+      final formValue = formKey.currentState!.value;
+      await _productRepository.updateProduct(
+        ProductModel(
+            id: product!.id,
+            material: formValue[AddProductFormFields.MATERIAL.toSimpleString()],
+            model: formValue[AddProductFormFields.MODEL.toSimpleString()],
+            photos: formValue[AddProductFormFields.PHOTOS.toSimpleString()],
+            price: int.parse(
+                formValue[AddProductFormFields.PRICE.toSimpleString()]),
+            userId: data!.id!,
+            description:
+                formValue[AddProductFormFields.DESCRIPTION.toSimpleString()],
+            size: double.parse(
+                formValue[AddProductFormFields.SIZE.toSimpleString()]),
+            sizeInfo: {
+              AddProductFormFields.SIZETYPE.toSimpleString():
+                  formValue[AddProductFormFields.SIZETYPE.toSimpleString()],
+              AddProductFormFields.WIDTH.toSimpleString(): double.parse(
+                  formValue[AddProductFormFields.WIDTH.toSimpleString()]),
+              AddProductFormFields.LENGTH.toSimpleString(): double.parse(
+                  formValue[AddProductFormFields.LENGTH.toSimpleString()]),
+            }),
+        product!.id,
+      );
+    } catch (e) {
+      logger.e(e);
+    } finally {
+      Timer(
+        const Duration(milliseconds: 500),
+        () => Get.offAllNamed(
+          Routes.MY_PRODUCTS,
+        ),
+      );
+      hideProgress();
     }
   }
 
   void _setInfo() {
-
-/*    formKey.currentState!.patchValue({
+    formKey.currentState!.patchValue({
+      AddProductFormFields.PHOTOS.toSimpleString(): product!.photos,
+      AddProductFormFields.SIZE.toSimpleString(): product!.size.toString(),
+      AddProductFormFields.SIZETYPE.toSimpleString():
+          product!.sizeInfo['sizeType'].toString(),
+      AddProductFormFields.WIDTH.toSimpleString():
+          product!.sizeInfo['width'].toString(),
+      AddProductFormFields.LENGTH.toSimpleString():
+          product!.sizeInfo['length'].toString(),
       AddProductFormFields.MODEL.toSimpleString(): product!.model,
       AddProductFormFields.MATERIAL.toSimpleString(): product!.material,
       AddProductFormFields.DESCRIPTION.toSimpleString(): product!.description,
-      AddProductFormFields.PRICE.toSimpleString(): product!.price,
-    });*/
-      modelField.text = product!.model;
-      materialField.text = product!.material;
-      descriptionField.text = product!.description;
-      priceField.text = product!.price;
+      AddProductFormFields.PRICE.toSimpleString(): product!.price.toString(),
+    });
   }
 
   Future<void> _getUser() async {

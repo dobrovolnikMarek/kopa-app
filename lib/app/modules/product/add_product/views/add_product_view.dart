@@ -6,7 +6,6 @@ import 'package:kopa_app/app/core/states/view/base_stateful.view.dart';
 import 'package:kopa_app/app/core/widgets/base_stateful.widget.dart';
 import 'package:kopa_app/app/modules/product/add_product/controllers/add_product_controller.dart';
 import 'package:kopa_app/app/modules/product/add_product/utils/add_product_form_fields.dart';
-import 'package:kopa_app/app/routes/app_pages.dart';
 import 'package:kopa_app/app/widgets/custom_text_label.dart';
 import 'package:kopa_app/app/widgets/form/image_form_field.dart';
 import 'package:kopa_app/app/widgets/form/text_field_with_picker.dart';
@@ -24,16 +23,11 @@ class _AddProductViewState
     return Scaffold(
       backgroundColor: const Color.fromRGBO(35, 35, 38, 1),
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Get.offAllNamed(Routes.SETTINGS),
-        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
           TextButton(
-            onPressed: () => controller.submit(),
+            onPressed: () => controller.product != null ? controller.updateProduct() : controller.submit(),
             child: Text('Зберегти'.tr),
           )
         ],
@@ -84,44 +78,73 @@ class _AddProductViewState
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Assets.images.sizeInfo.image(),
-                            /*SizedBox(
+                            SizedBox(
                               height: 200,
                               width: MediaQuery.of(context).size.width / 2.5,
                               child: Column(
                                 children: [
-                              Flexible(
-                                child: TextFieldWithPicker(
-                                  name: 'size',
-                                  errorText: 'Оберіть розмір'.tr,
-                                  textController: controller.sizeField,
-                                  onSelectItem: controller.selectValue,
-                                  isSizesItems: true,
-                                  prefix: Text('Розмір '.tr),
-                                ),
-                              ),
-                              Flexible(
-                                child: TextFieldWithPicker(
-                                  name: 'size',
-                                  errorText: 'Оберіть довжину'.tr,
-                                  textController: controller.lengthField,
-                                  onSelectItem: controller.selectValue,
-                                  isSizesItems: true,
-                                  prefix: Text('Довжина / см | '.tr),
-                                ),
-                              ),
-                              Flexible(
-                                child: TextFieldWithPicker(
-                                  name: 'size',
-                                  errorText: 'Оберіть ширину'.tr,
-                                  textController: controller.widthField,
-                                  onSelectItem: controller.selectValue,
-                                  isSizesItems: true,
-                                  prefix: Text('Ширина /  см | '.tr),
-                                ),
-                              ),
+                                  Row(
+                                    children: [
+                                      Flexible(
+                                        child: TextFieldWithPicker(
+                                          name: AddProductFormFields.SIZE.toSimpleString(),
+                                          errorText: 'Оберіть розмір'.tr,
+                                          onSelectItem: controller.selectValue,
+                                          isSizesItems: true,
+                                          prefixIcon: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text('Розмір '.tr),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      // Spacer(),
+                                      Center(
+                                        child: SizedBox(
+                                          width: 50,
+                                          child: TextFieldWithPicker(
+                                            name: AddProductFormFields.SIZETYPE.toSimpleString(),
+                                            errorText: 'Оберіть розмір'.tr,
+                                            onSelectItem: controller.selectValue,
+                                            sizeTypeList: controller.sizeTypesNames,
+                                            // isSizesItems: true,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Flexible(
+                                    child: TextFieldWithPicker(
+                                      name: AddProductFormFields.WIDTH.toSimpleString(),
+                                      errorText: 'Оберіть довжину'.tr,
+                                      onSelectItem: controller.selectValue,
+                                      isSizesItems: true,
+                                      prefixIcon: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text('Довжина / см | '.tr),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: TextFieldWithPicker(
+                                      name: AddProductFormFields.LENGTH.toSimpleString(),
+                                      errorText: 'Оберіть ширину'.tr,
+                                      onSelectItem: controller.selectValue,
+                                      isSizesItems: true,
+                                      prefixIcon: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text('Ширина /  см | '.tr),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
-                            ),*/
+                            ),
                           ],
                         ),
                       ),
@@ -171,6 +194,7 @@ class _AddProductViewState
                         name: AddProductFormFields.DESCRIPTION.toSimpleString(),
                         maxLines: null,
                         keyboardType: TextInputType.multiline,
+                        textCapitalization: TextCapitalization.words,
                         style: const TextStyle(
                           color: Color.fromRGBO(188, 188, 188, 1),
                         ),
@@ -205,7 +229,8 @@ class _AddProductViewState
                             Padding(
                               padding: const EdgeInsets.only(bottom: 20.0),
                               child: FormBuilderTextField(
-                                name: AddProductFormFields.PRICE.toSimpleString(),
+                                name:
+                                    AddProductFormFields.PRICE.toSimpleString(),
                                 style: const TextStyle(
                                   color: Color.fromRGBO(188, 188, 188, 1),
                                 ),

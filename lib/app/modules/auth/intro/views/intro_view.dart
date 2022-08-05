@@ -4,7 +4,7 @@ import 'package:kopa_app/app/core/states/view/base_stateful.view.dart';
 import 'package:kopa_app/app/core/widgets/base_stateful.widget.dart';
 import 'package:kopa_app/app/modules/auth/intro/widgets/auth_item.dart';
 import 'package:kopa_app/app/modules/auth/widgets/auth_title.dart';
-import 'package:kopa_app/app/routes/app_pages.dart';
+import 'package:kopa_app/routes/app_pages.dart';
 import 'package:kopa_app/resources/gen/assets.gen.dart';
 import 'package:kopa_app/resources/icons/kopa_app.dart';
 import '../controllers/intro_controller.dart';
@@ -18,8 +18,6 @@ class IntroView extends BaseStatefulWidget {
 class _IntroViewState extends BaseStatefulView<IntroView, IntroController> {
   @override
   Widget buildBody(BuildContext context) {
-    // GoogleSignInAccount? _user;
-    // GoogleSignInAccount get user => _user!;
     return Scaffold(
       body: ListView(
         children: [

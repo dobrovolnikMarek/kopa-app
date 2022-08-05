@@ -19,7 +19,7 @@ class _SplashViewState extends BaseStatefulView<SplashView, SplashController> {
         children: [
           Assets.images.logo.image(),
           const CircularProgressIndicator(
-            color: const Color.fromRGBO(12, 205, 230, 1),
+            color: Color.fromRGBO(12, 205, 230, 1),
           ),
         ],
       ),

@@ -7,7 +7,7 @@ import 'package:kopa_app/app/modules/splash/bindings/splash_binding.dart';
 import 'package:kopa_app/main.dart';
 import 'package:kopa_app/resources/theme/theme.dart';
 
-import 'app/routes/app_pages.dart';
+import 'routes/app_pages.dart';
 
 /// widget of app and its configuration
 class CoreApp extends StatefulWidget {

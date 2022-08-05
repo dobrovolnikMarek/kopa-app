@@ -1,10 +1,10 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kopa_app/app/modules/product/widgets/size_info.dart';
-import 'package:kopa_app/app/routes/app_pages.dart';
+import 'package:kopa_app/routes/app_pages.dart';
 import 'package:kopa_app/app/modules/product/widgets/price_tag.dart';
 import 'package:kopa_app/app/widgets/custom_auto_size_text.dart';
 import 'package:kopa_app/app/widgets/splash_effect.dart';
@@ -16,6 +16,8 @@ class ProductItem extends StatelessWidget {
   final bool? isArchive;
   final bool? isMine;
   final ProductModel product;
+  final Function? getProducts;
+  final Function? onChange;
 
   const ProductItem({
     Key? key,
@@ -23,7 +25,13 @@ class ProductItem extends StatelessWidget {
     required this.product,
     this.isArchive,
     this.isMine,
+    this.getProducts,
+    this.onChange,
   }) : super(key: key);
+
+  Uint8List convertBase64Image(String base64String) {
+    return const Base64Decoder().convert(base64String.split(',').last);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +42,15 @@ class ProductItem extends StatelessWidget {
           child: SplashEffect.circular(
             onTap: isArchive != null
                 ? null
-                : () {
-                    Get.toNamed(Routes.PRODUCT_INFO, arguments: {
-                      'product': product,
-                      'isLiked': isLiked,
-                    });
+                : () async {
+                    await Get.toNamed(
+                      Routes.PRODUCT_INFO,
+                      arguments: {
+                        'product': product,
+                        'isLiked': isLiked,
+                      },
+                    );
+                    getProducts != null ? getProducts!() : null;
                   },
             child: Stack(
               children: [
@@ -52,12 +64,13 @@ class ProductItem extends StatelessWidget {
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(10),
-                          child: CachedNetworkImage(
-                            fit: BoxFit.cover,
-                            imageUrl: product.photos.first,
+                          child: Image.memory(
+                            convertBase64Image(product.photos.first),
+                            gaplessPlayback: true,
                             width: 140,
                             height: 120,
-                          ),
+                            fit: BoxFit.cover,
+                          )
                         ),
                         const SizedBox(
                           width: 11,
@@ -87,7 +100,10 @@ class ProductItem extends StatelessWidget {
                                   color: Colors.white,
                                 ),
                               ),
-                              const SizeInfo(),
+                              SizeInfo(
+                                sizeInfo: product.sizeInfo,
+                                size: product.size,
+                              ),
                               CustomAutoSizeText(
                                 text: 'Матеріал: ${product.material}'.tr,
                                 presetFontSizes: 10,
@@ -107,14 +123,20 @@ class ProductItem extends StatelessWidget {
                 isMine != null && isMine == true
                     ? const Offstage()
                     : Positioned(
-                        top: 10,
-                        left: 10,
-                        child: Icon(
-                          Icons.favorite,
-                          color: isLiked != null && isLiked == true
-                              ? Colors.red
-                              : Colors.white,
-                          size: 35,
+                        top: 5,
+                        left: 5,
+                        child: IconButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () => onChange != null
+                              ? onChange!(isLiked, product.id)
+                              : null,
+                          icon: Icon(
+                            Icons.favorite,
+                            color: isLiked != null && isLiked == true
+                                ? Colors.red
+                                : Colors.white,
+                            size: 35,
+                          ),
                         ),
                       ),
                 isArchive != null && isArchive == true
@@ -149,7 +171,7 @@ class ProductItem extends StatelessWidget {
           top: 10,
           right: 10,
           child: PriceTag(
-            price: product.price,
+            price: product.price.toString(),
           ),
         ),
       ],

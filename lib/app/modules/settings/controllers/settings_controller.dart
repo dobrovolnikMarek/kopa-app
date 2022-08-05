@@ -8,7 +8,8 @@ import 'package:kopa_app/app/core/getx/base.controller.dart';
 import 'package:kopa_app/app/core/utils/logger.dart';
 import 'package:kopa_app/app/data/models/external/auth/user.model.dart';
 import 'package:kopa_app/app/data/repositories/user/user_repository.dart';
-import 'package:kopa_app/app/routes/app_pages.dart';
+import 'package:kopa_app/routes/app_pages.dart';
+import 'package:kopa_app/store/filter.store.dart';
 import 'package:kopa_app/app/widgets/bottom_sheet_default_layout.dart';
 import 'package:kopa_app/app/widgets/kopa_bottom_sheet.dart';
 import 'package:kopa_app/app/widgets/main_button.dart';
@@ -17,6 +18,7 @@ class SettingsController extends BaseController {
   final formKey = GlobalKey<FormBuilderState>();
   final _imageFile = Rx<XFile?>(null);
   final UserRepository _userRepository = Get.find();
+  final FilterStore _filterStore = Get.find();
   XFile? get imageFile => _imageFile.value;
   UserModel? data;
   final isLoading = false.obs;
@@ -53,7 +55,9 @@ class SettingsController extends BaseController {
                 text: 'Внутрішнє сховище'.tr),
           ],
         ));
+
     if (source['source'] != null) {
+      showProgress();
       final pickedFile =
       await _imagePicker.pickImage(source: source['source']!);
       imageFile = pickedFile;
@@ -63,7 +67,9 @@ class SettingsController extends BaseController {
           'imgUrl': link
         });
       }
+      hideProgress();
     }
+
   }
 
   Future<void> _getUser() async {
@@ -79,6 +85,7 @@ class SettingsController extends BaseController {
 
   void signOut(){
     FirebaseAuth.instance.signOut();
+    _filterStore.reset();
     Get.offAllNamed(Routes.INTRO);
   }
 }

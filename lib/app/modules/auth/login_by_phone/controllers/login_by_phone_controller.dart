@@ -6,7 +6,7 @@ import 'package:kopa_app/app/core/getx/base.controller.dart';
 import 'package:kopa_app/app/core/utils/logger.dart';
 import 'package:kopa_app/app/data/repositories/user/user_repository.dart';
 import 'package:kopa_app/app/modules/auth/login_by_phone/utils/login_form_fields.dart';
-import 'package:kopa_app/app/routes/app_pages.dart';
+import 'package:kopa_app/routes/app_pages.dart';
 
 class LoginByPhoneController extends BaseController {
   //TODO: Implement LoginByPhoneController

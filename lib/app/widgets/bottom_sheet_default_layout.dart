@@ -6,6 +6,7 @@ class BottomSheetDefaultLayout extends StatelessWidget {
   final String title;
   final String? subtitle, acceptText, cancelText;
   final List<MainButton>? actions;
+
   const BottomSheetDefaultLayout({
     Key? key,
     required this.title,
@@ -16,13 +17,13 @@ class BottomSheetDefaultLayout extends StatelessWidget {
     this.subtitle,
     this.actions,
   })  : assert(actions == null ? acceptText != null : true,
-  "acceptText text shouldn't be null if not using actions"),
+            "acceptText text shouldn't be null if not using actions"),
         assert(actions == null ? cancelText != null : true,
-        "cancelText text shouldn't be null if not using actions"),
+            "cancelText text shouldn't be null if not using actions"),
         assert(actions == null ? onAccept != null : true,
-        "onAccept text shouldn't be null if not using actions"),
+            "onAccept text shouldn't be null if not using actions"),
         assert(actions == null ? onCancel != null : true,
-        "onCancel text shouldn't be null if not using actions"),
+            "onCancel text shouldn't be null if not using actions"),
         super(key: key);
 
   @override
@@ -66,21 +67,14 @@ class BottomSheetDefaultLayout extends StatelessWidget {
                 text: acceptText!,
               ),
             ),
-/*            GFButton.text(
-              isPrimary: false,
-              backgroundColor: Colors.white,
-              textColor: Colors.black,
-              onPressed: onCancel,
-              text: cancelText,
-            ),*/
           ] else
             ...actions!
                 .map(
                   (e) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5.0),
-                child: e,
-              ),
-            )
+                    padding: const EdgeInsets.symmetric(vertical: 5.0),
+                    child: e,
+                  ),
+                )
                 .toList()
         ],
       ),

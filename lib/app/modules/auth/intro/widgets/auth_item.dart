@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:kopa_app/app/widgets/splash_effect.dart';
 
 class AuthItem extends StatelessWidget {

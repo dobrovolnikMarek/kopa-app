@@ -17,7 +17,7 @@ class MyProductsController extends BaseController {
   @override
   void onInit() {
     // before first render
-    _getActiveProducts();
+     _getActiveProducts();
     super.onInit();
   }
 

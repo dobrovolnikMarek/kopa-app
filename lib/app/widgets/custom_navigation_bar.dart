@@ -1,24 +1,44 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kopa_app/app/routes/app_pages.dart';
+import 'package:kopa_app/app/core/utils/logger.dart';
+import 'package:kopa_app/routes/app_pages.dart';
 import 'package:kopa_app/resources/icons/kopa_app.dart';
 
-class CustomNavigationBar extends StatelessWidget {
-  final int? index;
+class CustomNavigationBar extends StatefulWidget {
+  final int index;
 
-  const CustomNavigationBar({Key? key, this.index}) : super(key: key);
+  const CustomNavigationBar({Key? key, required this.index}) : super(key: key);
+
+  @override
+  State<CustomNavigationBar> createState() => _CustomNavigationBarState();
+}
+
+class _CustomNavigationBarState extends State<CustomNavigationBar>
+    with SingleTickerProviderStateMixin {
+  int? localIndex;
+  List<String> routes = [
+    Routes.HOME,
+    Routes.MY_PRODUCTS,
+    Routes.ADD_PRODUCT,
+    Routes.LIKED_PRODUCTS,
+    Routes.SETTINGS,
+  ];
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    localIndex = widget.index;
+    _tabController = TabController(
+        vsync: this, length: routes.length, initialIndex: widget.index);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<String> routes = [
-      Routes.HOME,
-      Routes.MY_PRODUCTS,
-      Routes.ADD_PRODUCT,
-      Routes.LIKED_PRODUCTS,
-      Routes.SETTINGS,
-    ];
     return ConvexAppBar(
+      controller: _tabController,
       height: 70,
       style: TabStyle.fixedCircle,
       backgroundColor: const Color(0xff4f5050),
@@ -31,9 +51,22 @@ class CustomNavigationBar extends StatelessWidget {
         TabItem(icon: Icons.favorite),
         TabItem(icon: KopaApp.gear),
       ],
-      initialActiveIndex: index ?? 0,
-      // onTap: (int i) => Get.toNamed(routes[i]),
-      onTap: (int i) => Get.offAllNamed(routes[i]),
+      initialActiveIndex: widget.index,
+      onTap: (int i) async {
+        if (i == widget.index) {
+          return;
+        }
+        if (routes[i] == Routes.ADD_PRODUCT) {
+          var prevIndex = widget.index;
+          await Get.toNamed(routes[i]);
+          setState(() {
+            _tabController.animateTo(prevIndex);
+          });
+        } else {
+          _tabController.animateTo(i);
+          Get.offAllNamed(routes[i]);
+        }
+      },
     );
   }
 }

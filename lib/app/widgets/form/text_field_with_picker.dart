@@ -5,11 +5,14 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 
 class TextFieldWithPicker extends StatelessWidget {
   final List<String>? itemsList;
+  final List<Map<String, String>>? sizeTypeList;
   final Function onSelectItem;
   final String name;
-  final String errorText;
+  final String? errorText;
   final Widget? prefix;
+  final Widget? prefixIcon;
   final bool? isSizesItems;
+  final TextEditingController? textController;
 
   const TextFieldWithPicker(
       {Key? key,
@@ -17,7 +20,10 @@ class TextFieldWithPicker extends StatelessWidget {
       required this.onSelectItem,
       required this.name,
       this.prefix,
-      this.isSizesItems, required this.errorText})
+      this.isSizesItems,
+      this.errorText,
+      this.prefixIcon,
+      this.sizeTypeList, this.textController})
       : super(key: key);
 
   @override
@@ -43,45 +49,55 @@ class TextFieldWithPicker extends StatelessWidget {
     return FormBuilderTextField(
       key: Key(name),
       showCursor: false,
+      controller: textController,
       enableInteractiveSelection: false,
       onTap: () {
         _showDialog(
           CupertinoPicker(
-              selectionOverlay: Container(
-                decoration: const BoxDecoration(
-                  border: Border.symmetric(
-                    horizontal: BorderSide(width: 1, color: Colors.black),
-                  ),
+            selectionOverlay: Container(
+              decoration: const BoxDecoration(
+                border: Border.symmetric(
+                  horizontal: BorderSide(width: 1, color: Colors.black),
                 ),
               ),
-              itemExtent: 45,
-              onSelectedItemChanged: (int value) {
-                onSelectItem(itemsList?[value] ?? (value + 18).toString(),
-                    name
-                    );
-              },
-              children: isSizesItems != null
-                  ? List<Widget>.generate(
-                      20,
-                      (int index) {
-                        return Center(
-                          child: Text(
-                            (index + 18).toString(),
-                          ),
-                        );
-                      },
-                    )
-                  : itemsList!
-                      .map(
-                        (e) => Center(
-                          child: Text(
-                            e,
-                            style: const TextStyle(fontSize: 23),
-                          ),
+            ),
+            itemExtent: 45,
+            onSelectedItemChanged: (int value) {
+              onSelectItem(sizeTypeList != null ? sizeTypeList![value]['short'] : itemsList?[value] ?? (value == 0 ? "" : (value + 17).toString()), name);
+            },
+            children: isSizesItems != null
+                ? List<Widget>.generate(
+                    30,
+                    (int index) {
+                      return Center(
+                        child: Text( index == 0 ? '' :
+                          (index + 17).toString(),
                         ),
-                      )
-                      .toList(),
-              ),
+                      );
+                    },
+                  )
+                : itemsList != null
+                    ? itemsList!
+                        .map(
+                          (e) => Center(
+                            child: Text(
+                              e,
+                              style: const TextStyle(fontSize: 23),
+                            ),
+                          ),
+                        )
+                        .toList()
+                    : sizeTypeList!
+                        .map(
+                          (e) => Center(
+                            child: Text(
+                              e['full']!,
+                              style: const TextStyle(fontSize: 23),
+                            ),
+                          ),
+                        )
+                        .toList(),
+          ),
         );
       },
       name: name,
@@ -92,6 +108,7 @@ class TextFieldWithPicker extends StatelessWidget {
       keyboardType: TextInputType.none,
       decoration: InputDecoration(
         prefix: prefix,
+        prefixIcon: prefixIcon,
         border: const UnderlineInputBorder(
           borderSide: BorderSide(
             width: 1,
@@ -100,11 +117,11 @@ class TextFieldWithPicker extends StatelessWidget {
           ),
         ),
       ),
-      validator: FormBuilderValidators.compose([
+      validator: errorText != null ?  FormBuilderValidators.compose([
         FormBuilderValidators.required(
           errorText: errorText,
         ),
-      ]),
+      ]) : null,
     );
   }
 }

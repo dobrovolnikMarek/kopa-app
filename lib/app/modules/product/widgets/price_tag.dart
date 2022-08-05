@@ -21,7 +21,7 @@ class PriceTag extends StatelessWidget {
         color: const Color(0xffffd600),
       ),
       child: Center(
-        child: Text('${price}\$', style: const TextStyle(
+        child: Text('$price\$', style: const TextStyle(
           color: Color(0xff434343),
           fontSize: 16,
           fontWeight: FontWeight.w700,
